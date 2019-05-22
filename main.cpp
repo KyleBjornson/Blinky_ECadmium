@@ -3,14 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#if __cplusplus > 199711L
+#define register      // Deprecated in C++11.
+#endif  // #if __cplusplus > 199711L
 
-#include "mbed.h"
+
+#include "../mbed.h"
 #include "stats_report.h"
 
-//#include <iostream>
-//#include <chrono>
-//#include <algorithm>
-//#include <string>
+#include <iostream>
+#include <chrono>
+#include <algorithm>
+#include <string>
 
 #include <cadmium/modeling/coupled_model.hpp>
 #include <cadmium/modeling/ports.hpp>
@@ -21,14 +25,14 @@
 #include <cadmium/engine/pdevs_dynamic_runner.hpp>
 #include <cadmium/logger/tuple_to_ostream.hpp>
 #include <cadmium/logger/common_loggers.hpp>
-//
-//
-// #include "../vendor/NDTime.hpp"
-// #include "../vendor/iestream.hpp"
-//
-// #include "../data_structures/message.hpp"
-//
-// #include "../atomics/senderCadmium.hpp"
+
+
+#include "../vendor/NDTime.hpp"
+#include "../vendor/iestream.hpp"
+
+#include "../data_structures/message.hpp"
+
+//#include "../atomics/senderCadmium.hpp"
 // #include "../atomics/receiverCadmium.hpp"
 // #include "../atomics/subnetCadmium.hpp"
 
@@ -47,6 +51,7 @@ int main()
         // Blink LED and wait 0.5 seconds
         led1 = !led1;
         wait_ms(SLEEP_TIME);
+        printf("Hello world");
 
         if ((0 == count) || (PRINT_AFTER_N_LOOPS == count)) {
             // Following the main thread wait, report on the current system status
