@@ -32,14 +32,14 @@ using namespace std;
     };
 
     template<typename TIME>
-    class blinky {
+    class Blinky {
         using defs=blinky_defs; // putting definitions in context
         public:
             //Parameters to be overwriten when instantiating the atomic model
             TIME   lightToggleTime;
             // default constructor
-            blinky() noexcept{
-              lightToggleTime  = TIME("00:00:30");
+            Blinky() noexcept{
+              lightToggleTime  = TIME("00:00:10");
               state.lightOn = false;
             }
             
@@ -84,7 +84,7 @@ using namespace std;
               return lightToggleTime;
             }
 
-            friend std::ostringstream& operator<<(std::ostringstream& os, const typename blinky<TIME>::state_type& i) {
+            friend std::ostringstream& operator<<(std::ostringstream& os, const typename Blinky<TIME>::state_type& i) {
               os << "Output: " << (i.lightOn ? 1 : 0); 
               return os;
             }

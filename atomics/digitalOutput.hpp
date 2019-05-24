@@ -3,8 +3,8 @@
 * Cadmium implementation of CD++ or atomic model
 */
 
-#ifndef BOOST_SIMULATION_PDEVS_DIGITALOUT_HPP
-#define BOOST_SIMULATION_PDEVS_DIGITALOUT_HPP
+#ifndef BOOST_SIMULATION_PDEVS_DIGITALOUTPUT_HPP
+#define BOOST_SIMULATION_PDEVS_DIGITALOUTPUT_HPP
 
 #include <cadmium/modeling/ports.hpp>
 #include <cadmium/modeling/message_bag.hpp>
@@ -35,18 +35,18 @@ DigitalOut led1(LED1);
 #endif
 
 //Port definition
-    struct digitalOut_defs{
+    struct digitalOutput_defs{
         struct in : public in_port<Message_t> {
         };
     };
 
     template<typename TIME>
-    class DigitalOut{
-        using defs=digitalOut_defs; // putting definitions in context
+    class DigitalOutput {
+        using defs=digitalOutput_defs; // putting definitions in context
         public:
             //Parameters to be overwriten when instantiating the atomic model
-            // default constructor
-            DigitalOut(){
+            // default c onstructor
+            DigitalOutput() noexcept{
               state.output = false;
             }
             
@@ -70,7 +70,7 @@ DigitalOut led1(LED1);
                 state.output=x.value == 1;
               }
               #ifdef ECADMIUM
-                led1 = state.output;
+                led1 = (state.output ? 1 : 0);
               #endif
             }
             // confluence transition
@@ -91,14 +91,18 @@ DigitalOut led1(LED1);
 
             // time_advance function
             TIME time_advance() const {     
-              return std::numeric_limits<TIME>::infinity();
+              #ifdef ECADMIUM
+                return TIME("10:00:00");
+              #else
+                return std::numeric_limits<TIME>::infinity();
+              #endif
             }
 
-            friend std::ostringstream& operator<<(std::ostringstream& os, const typename DigitalOut<TIME>::state_type& i) {
+            friend std::ostringstream& operator<<(std::ostringstream& os, const typename DigitalOutput<TIME>::state_type& i) {
               os << "Pin Out: " << (i.output ? 1 : 0); 
               return os;
             }
         };     
 
 
-#endif // BOOST_SIMULATION_PDEVS_DIGITALOUT_HPP
+#endif // BOOST_SIMULATION_PDEVS_DIGITALOUTPUT_HPP

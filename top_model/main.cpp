@@ -19,7 +19,7 @@
 
 #include "../data_structures/message.hpp"
 
-#include "../atomics/digitalOut.hpp"
+#include "../atomics/digitalOutput.hpp"
 #include "../atomics/blinky.hpp"
 
 using namespace std;
@@ -27,9 +27,25 @@ using namespace std;
 using hclock=chrono::high_resolution_clock;
 using TIME = NDTime;
 
+#ifdef ECADMIUM
+// You must increase stack size for ECADMIUM. 
+// The main functionality will be ran in a new thread with increased stack size
+// See below for reference:
+// https://os.mbed.com/questions/79584/Change-main-thread-stack-size/
+Thread app_thread(osPriorityNormal, 16*1024); // 16k stack
+void run_app();
+#endif
 
 int main(int argc, char ** argv) {
+  #ifdef ECADMIUM
+  app_thread.start(&run_app);
+  // Let the main thread die on the embedded platform. 
+}
+// run_app is only used for embedded threading, everything runs in main when simulated.
+void run_app(){
+#endif
 
+  // all simulation timing and I/O streams are ommited when running embedded 
   #ifndef ECADMIUM
     auto start = hclock::now(); //to measure simulation execution time
 
@@ -69,30 +85,29 @@ using logger_top=cadmium::logger::multilogger<log_messages, global_time>;
 /********************************************/
 using AtomicModelPtr=std::shared_ptr<cadmium::dynamic::modeling::model>;
 using CoupledModelPtr=std::shared_ptr<cadmium::dynamic::modeling::coupled<TIME>>;
-#define MAKE_DYN_ATM_MODEL(X, Y) cadmium::dynamic::translate::make_dynamic_atomic_model<X, TIME>(Y);
 
 /********************************************/
 /****** blinky *******************/
 /********************************************/
 
-AtomicModelPtr blinky1 = MAKE_DYN_ATM_MODEL(blinky,"blinky1");
+AtomicModelPtr blinky1 = cadmium::dynamic::translate::make_dynamic_atomic_model<Blinky, TIME>("blinky1");
 
 /********************************************/
-/****** DigitalOut1 *******************/
+/****** DigitalOutput1 *******************/
 /********************************************/
 
-AtomicModelPtr digitalOut1 = MAKE_DYN_ATM_MODEL(DigitalOut,"digitalOut1");
+AtomicModelPtr digitalOutput1 = cadmium::dynamic::translate::make_dynamic_atomic_model<DigitalOutput, TIME>();
 
 /************************/
 /*******TOP MODEL********/
 /************************/
 cadmium::dynamic::modeling::Ports iports_TOP = {};
 cadmium::dynamic::modeling::Ports oports_TOP = {};
-cadmium::dynamic::modeling::Models submodels_TOP =  {blinky1, digitalOut1};
+cadmium::dynamic::modeling::Models submodels_TOP =  {blinky1, digitalOutput1};
 cadmium::dynamic::modeling::EICs eics_TOP = {};
 cadmium::dynamic::modeling::EOCs eocs_TOP = {};
 cadmium::dynamic::modeling::ICs ics_TOP = {
-   cadmium::dynamic::translate::make_IC<blinky_defs::dataOut, digitalOut_defs::in>("blinky1","digitalOut1")
+   cadmium::dynamic::translate::make_IC<blinky_defs::dataOut, digitalOutput_defs::in>("blinky1","digitalOutput1")
 };
 CoupledModelPtr TOP = std::make_shared<cadmium::dynamic::modeling::coupled<TIME>>(
  "TOP", 
@@ -105,18 +120,23 @@ CoupledModelPtr TOP = std::make_shared<cadmium::dynamic::modeling::coupled<TIME>
  );
 
 ///****************////
-
+    #ifndef ECADMIUM
     auto elapsed1 = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(hclock::now() - start).count();
     cout << "Model Created. Elapsed time: " << elapsed1 << "sec" << endl;
-    
+    #endif
+
     cadmium::dynamic::engine::runner<NDTime, logger_top> r(TOP, {0});
+    #ifndef ECADMIUM
     elapsed1 = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(hclock::now() - start).count();
     cout << "Runner Created. Elapsed time: " << elapsed1 << "sec" << endl;
 
     cout << "Simulation starts" << endl;
+    #endif
 
     r.run_until(NDTime("00:10:00:000"));
+    #ifndef ECADMIUM
     auto elapsed = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(hclock::now() - start).count();
     cout << "Simulation took:" << elapsed << "sec" << endl;
     return 0;
+    #endif
 }
