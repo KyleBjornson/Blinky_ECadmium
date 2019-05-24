@@ -31,7 +31,7 @@ using namespace cadmium;
 using namespace std;
 
 #ifdef ECADMIUM
-DigitalOut led1(LED1);
+DigitalOut* digiPin;
 #endif
 
 //Port definition
@@ -48,7 +48,17 @@ DigitalOut led1(LED1);
             // default c onstructor
             DigitalOutput() noexcept{
               state.output = false;
+              #ifdef ECADMIUM
+              digiPin = new DigitalOutput(D0);
+              #endif
             }
+
+            #ifdef ECADMIUM
+            DigitalOutput(PinName pin) {
+              state.output = false;
+              digiPin = new DigitalOut(pin);
+            }
+            #endif
             
             // state definition
             struct state_type{
@@ -70,7 +80,7 @@ DigitalOut led1(LED1);
                 state.output=x.value == 1;
               }
               #ifdef ECADMIUM
-                led1 = (state.output ? 1 : 0);
+              digiPin->write(state.output ? 1 : 0);
               #endif
             }
             // confluence transition
@@ -91,11 +101,11 @@ DigitalOut led1(LED1);
 
             // time_advance function
             TIME time_advance() const {     
-              #ifdef ECADMIUM
-                return TIME("10:00:00");
-              #else
+              // #ifdef ECADMIUM
+              //   return TIME("10:00:00");
+              // #else
                 return std::numeric_limits<TIME>::infinity();
-              #endif
+              //#endif
             }
 
             friend std::ostringstream& operator<<(std::ostringstream& os, const typename DigitalOutput<TIME>::state_type& i) {

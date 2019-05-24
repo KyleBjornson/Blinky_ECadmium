@@ -96,7 +96,7 @@ AtomicModelPtr blinky1 = cadmium::dynamic::translate::make_dynamic_atomic_model<
 /****** DigitalOutput1 *******************/
 /********************************************/
 
-AtomicModelPtr digitalOutput1 = cadmium::dynamic::translate::make_dynamic_atomic_model<DigitalOutput, TIME>("digitalOutput1");
+AtomicModelPtr digitalOutput1 = cadmium::dynamic::translate::make_dynamic_atomic_model<DigitalOutput, TIME>("digitalOutput1", LED1);
 
 /************************/
 /*******TOP MODEL********/
