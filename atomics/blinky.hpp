@@ -39,7 +39,7 @@ using namespace std;
             TIME   lightToggleTime;
             // default constructor
             Blinky() noexcept{
-              lightToggleTime  = TIME("00:00:10");
+              lightToggleTime  = TIME("00:00:02");
               state.lightOn = false;
             }
             

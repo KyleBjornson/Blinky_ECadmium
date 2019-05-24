@@ -32,7 +32,7 @@ using TIME = NDTime;
 // The main functionality will be ran in a new thread with increased stack size
 // See below for reference:
 // https://os.mbed.com/questions/79584/Change-main-thread-stack-size/
-Thread app_thread(osPriorityNormal, 16*1024); // 16k stack
+Thread app_thread(osPriorityNormal, 32*1024); // 16k stack
 void run_app();
 #endif
 
@@ -96,7 +96,7 @@ AtomicModelPtr blinky1 = cadmium::dynamic::translate::make_dynamic_atomic_model<
 /****** DigitalOutput1 *******************/
 /********************************************/
 
-AtomicModelPtr digitalOutput1 = cadmium::dynamic::translate::make_dynamic_atomic_model<DigitalOutput, TIME>();
+AtomicModelPtr digitalOutput1 = cadmium::dynamic::translate::make_dynamic_atomic_model<DigitalOutput, TIME>("digitalOutput1");
 
 /************************/
 /*******TOP MODEL********/

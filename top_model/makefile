@@ -7,7 +7,7 @@ all: main.o ../data_structures/message.o
 	$(CC) -g -o BLINKY_TOP main.o ../data_structures/message.o 
 
 main.o: main.cpp
-	$(CC) -g -c $(CFLAGS) $(INCLUDECADMIUM) -fstack-usage main.cpp -o main.o
+	$(CC) -g -c $(CFLAGS) $(INCLUDECADMIUM) main.cpp -o main.o
 
 ../data_structures/message.o: 
 	$(CC) -g -c $(CFLAGS) $(INCLUDECADMIUM) ../data_structures/message.cpp -o ../data_structures/message.o
