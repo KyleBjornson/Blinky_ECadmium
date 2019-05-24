@@ -3,8 +3,8 @@
 * Cadmium implementation of CD++ or atomic model
 */
 
-#ifndef BOOST_SIMULATION_PDEVS_DIGITALOUTPUT_HPP
-#define BOOST_SIMULATION_PDEVS_DIGITALOUTPUT_HPP
+#ifndef BOOST_SIMULATION_PDEVS_DIGITALINPUT_HPP
+#define BOOST_SIMULATION_PDEVS_DIGITALINPUT_HPP
 
 #include <cadmium/modeling/ports.hpp>
 #include <cadmium/modeling/message_bag.hpp>
@@ -31,32 +31,35 @@ using namespace cadmium;
 using namespace std;
 
 //Port definition
-    struct digitalOutput_defs{
-        struct in : public in_port<Message_t> {
+    struct digitalInput_defs{
+        struct out : public out_port<Message_t> {
         };
     };
 
     template<typename TIME>
-    class DigitalOutput {
-        using defs=digitalOutput_defs; // putting definitions in context
+    class DigitalInput {
+        using defs=digitalInput_defs; // putting definitions in context
         public:
             //Parameters to be overwriten when instantiating the atomic model
             #ifdef ECADMIUM
-            DigitalOut* digiPin;
+              DigitalIn* digiPin;
             #endif
-            
+
+            TIME   pollingRate;
             // default c onstructor
-            DigitalOutput() noexcept{
+            DigitalInput() noexcept{
+              pollingRate = TIME("00:00:00:100");
               state.output = false;
               #ifdef ECADMIUM
-              digiPin = new DigitalOutput(D0);
+              digiPin = new DigitalIn(D0);
               #endif
             }
 
             #ifdef ECADMIUM
-            DigitalOutput(PinName pin) {
-              state.output = false;
-              digiPin = new DigitalOut(pin);
+            DigitalInput(PinName pin) {
+              pollingRate = TIME("00:00:01:00");
+              digiPin = new DigitalIn(pin);
+              state.output = digiPin->read();
             }
             #endif
             
@@ -67,21 +70,18 @@ using namespace std;
             state_type state;
             // ports definition
 
-            using input_ports=std::tuple<typename defs::in>;
-            using output_ports=std::tuple<>;
+            using input_ports=std::tuple<>;
+            using output_ports=std::tuple<typename defs::out>;
 
             // internal transition
             void internal_transition() {
+              #ifdef ECADMIUM
+              state.output = digiPin->read();
+              #endif
             }
 
             // external transition
             void external_transition(TIME e, typename make_message_bags<input_ports>::type mbs) { 
-              for(const auto &x : get_messages<typename defs::in>(mbs)){
-                state.output=x.value == 1;
-              }
-              #ifdef ECADMIUM
-              digiPin->write(state.output ? 1 : 0);
-              #endif
             }
             // confluence transition
             void confluence_transition(TIME e, typename make_message_bags<input_ports>::type mbs) {
@@ -92,27 +92,23 @@ using namespace std;
             // output function
             typename make_message_bags<output_ports>::type output() const {
               typename make_message_bags<output_ports>::type bags;
-              // Message_t out;              
-              // out.value = (state.output ? 1 : 0);
-              // get_messages<typename defs::dataOut>(bags).push_back(out);
+               Message_t out;              
+               out.value = (state.output ? 1 : 0);
+               get_messages<typename defs::out>(bags).push_back(out);
     
               return bags;
             }
 
             // time_advance function
             TIME time_advance() const {     
-              // #ifdef ECADMIUM
-              //   return TIME("10:00:00");
-              // #else
-                return std::numeric_limits<TIME>::infinity();
-              //#endif
+                return pollingRate;
             }
 
-            friend std::ostringstream& operator<<(std::ostringstream& os, const typename DigitalOutput<TIME>::state_type& i) {
-              os << "Pin Out: " << (i.output ? 1 : 0); 
+            friend std::ostringstream& operator<<(std::ostringstream& os, const typename DigitalInput<TIME>::state_type& i) {
+              os << "Input Pin: " << (i.output ? 1 : 0); 
               return os;
             }
         };     
 
 
-#endif // BOOST_SIMULATION_PDEVS_DIGITALOUTPUT_HPP
+#endif // BOOST_SIMULATION_PDEVS_DIGITALINPUT_HPP
