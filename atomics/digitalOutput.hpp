@@ -49,7 +49,7 @@ using namespace std;
             DigitalOutput() noexcept{
               state.output = false;
               #ifdef ECADMIUM
-              digiPin = new DigitalOutput(D0);
+              digiPin = new DigitalOut(D0);
               #endif
             }
 
