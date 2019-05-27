@@ -77,7 +77,7 @@ using namespace std;
             // external transition
             void external_transition(TIME e, typename make_message_bags<input_ports>::type mbs) { 
               for(const auto &x : get_messages<typename defs::in>(mbs)){
-                state.output=x.value == 1;
+                state.output = x.value;
               }
               #ifdef ECADMIUM
               digiPin->write(state.output ? 1 : 0);

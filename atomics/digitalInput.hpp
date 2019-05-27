@@ -52,20 +52,30 @@ using namespace std;
               state.output = false;
               #ifdef ECADMIUM
               digiPin = new DigitalIn(D0);
+              state.output = digiPin->read();
               #endif
+              state.last = state.output;
             }
 
             #ifdef ECADMIUM
             DigitalInput(PinName pin) {
-              pollingRate = TIME("00:00:01:00");
+              pollingRate = TIME("00:00:00:100");
               digiPin = new DigitalIn(pin);
               state.output = digiPin->read();
+              state.last = state.output;
+            }
+            DigitalInput(PinName pin, TIME rate) {
+              pollingRate = rate;
+              digiPin = new DigitalIn(pin);
+              state.output = digiPin->read();
+              state.last = state.output;
             }
             #endif
             
             // state definition
             struct state_type{
               bool output;
+              bool last;
             }; 
             state_type state;
             // ports definition
@@ -76,6 +86,7 @@ using namespace std;
             // internal transition
             void internal_transition() {
               #ifdef ECADMIUM
+              state.last = state.output;
               state.output = digiPin->read();
               #endif
             }
@@ -92,9 +103,11 @@ using namespace std;
             // output function
             typename make_message_bags<output_ports>::type output() const {
               typename make_message_bags<output_ports>::type bags;
-               Message_t out;              
-               out.value = (state.output ? 1 : 0);
-               get_messages<typename defs::out>(bags).push_back(out);
+              if(state.last != state.output) {
+                Message_t out;              
+                out.value = (state.output ? 1 : 0);
+                get_messages<typename defs::out>(bags).push_back(out);
+              }
     
               return bags;
             }

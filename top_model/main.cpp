@@ -33,7 +33,7 @@ using TIME = NDTime;
 // The main functionality will be ran in a new thread with increased stack size
 // See below for reference:
 // https://os.mbed.com/questions/79584/Change-main-thread-stack-size/
-Thread app_thread(osPriorityNormal, 32*1024); // 16k stack
+Thread app_thread(osPriorityNormal, 16*1024); // 16k stack
 void run_app();
 #endif
 
@@ -138,7 +138,7 @@ CoupledModelPtr TOP = std::make_shared<cadmium::dynamic::modeling::coupled<TIME>
     cout << "Model Created. Elapsed time: " << elapsed1 << "sec" << endl;
     #endif
 
-    cadmium::dynamic::engine::runner<NDTime, logger_top> r(TOP, {0});
+    cadmium::dynamic::engine::runner<NDTime, state> r(TOP, {0});
     #ifndef ECADMIUM
     elapsed1 = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(hclock::now() - start).count();
     cout << "Runner Created. Elapsed time: " << elapsed1 << "sec" << endl;

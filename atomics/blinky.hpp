@@ -41,8 +41,8 @@ using namespace std;
             TIME   fastToggleTime;
             // default constructor
             Blinky() noexcept{
-              slowToggleTime  = TIME("00:00:03");
-              fastToggleTime  = TIME("00:00:01");
+              slowToggleTime  = TIME("00:00:00:750");
+              fastToggleTime  = TIME("00:00:00:250");
               state.lightOn = false;
               state.fastToggle = false;
             }
@@ -66,9 +66,9 @@ using namespace std;
             // external transition
             void external_transition(TIME e, typename make_message_bags<input_ports>::type mbs) { 
               for(const auto &x : get_messages<typename defs::in>(mbs)){
-                if(x.value ==0)
-                  state.fastToggle = !state.fastToggle;
-                // state.fastToggle = (x.value == 0);
+                // if(x.value == 0)
+                //   state.fastToggle = !state.fastToggle;
+                state.fastToggle = (x.value == 0);
               }
             }
             // confluence transition
