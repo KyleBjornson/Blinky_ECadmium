@@ -28,7 +28,8 @@ done
 
 # -> Begin Install
 
-echo "### Install Dependencies ###"
+#super user do to prompt for password so user can go get a coffee and not watch the install..
+sudo echo "### Install Dependencies ###" 
 
 if [ $CADMIUM_DEPENDENCIES -eq 1 ]
 then
