@@ -11,6 +11,7 @@ embedded:
 
 flash: 
 	sudo cp ../BUILD/$(COMPILE_TARGET)/GCC_ARM-CADMIUM/*.bin /media/$(USER)/$(FLASH_TARGET)/
+	$(info *** FLASH MAKE TAKE ~10 Seconds! DO NOT RESET WHILE COM PORT LED IS FLASHING! ***)
 
 all: main.o ../data_structures/message.o 
 	$(CC) -g -o $(EXECUTABLE_NAME) main.o ../data_structures/message.o 
