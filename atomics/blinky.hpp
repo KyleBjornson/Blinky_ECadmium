@@ -29,6 +29,7 @@ using namespace std;
 //Port definition
     struct blinky_defs {
         struct dataOut : public out_port<Message_t> { };
+        struct in : public in_port<Message_t> { };
     };
 
     template<typename TIME>
@@ -36,21 +37,25 @@ using namespace std;
         using defs=blinky_defs; // putting definitions in context
         public:
             //Parameters to be overwriten when instantiating the atomic model
-            TIME   lightToggleTime;
+            TIME   slowToggleTime;
+            TIME   fastToggleTime;
             // default constructor
             Blinky() noexcept{
-              lightToggleTime  = TIME("00:00:02");
+              slowToggleTime  = TIME("00:00:03");
+              fastToggleTime  = TIME("00:00:01");
               state.lightOn = false;
+              state.fastToggle = false;
             }
             
             // state definition
             struct state_type{
               bool lightOn;
+              bool fastToggle;
             }; 
             state_type state;
             // ports definition
 
-            using input_ports=std::tuple<>;
+            using input_ports=std::tuple<typename defs::in>;
             using output_ports=std::tuple<typename defs::dataOut>;
 
             // internal transition
@@ -60,8 +65,11 @@ using namespace std;
 
             // external transition
             void external_transition(TIME e, typename make_message_bags<input_ports>::type mbs) { 
-              // There are no inputs, therefore there should never be an external transition.
-              assert(false);
+              for(const auto &x : get_messages<typename defs::in>(mbs)){
+                if(x.value ==0)
+                  state.fastToggle = !state.fastToggle;
+                // state.fastToggle = (x.value == 0);
+              }
             }
             // confluence transition
             void confluence_transition(TIME e, typename make_message_bags<input_ports>::type mbs) {
@@ -81,7 +89,10 @@ using namespace std;
 
             // time_advance function
             TIME time_advance() const {  
-              return lightToggleTime;
+              if(state.fastToggle)
+                return fastToggleTime;
+              else 
+                return slowToggleTime;
             }
 
             friend std::ostringstream& operator<<(std::ostringstream& os, const typename Blinky<TIME>::state_type& i) {
