@@ -1,8 +1,13 @@
+# Ensure that the repo has been cloned recursively, or MBED will not be downloaded!
+# git clone --recursive https://github.com/KyleBjornson/Blinky_ECadmium.git
+
 GCC_FOLDER_NAME=gcc-arm-none-eabi-8-2018-q4-major
 VERSION=1_0_0
 CADMIUM_DEPENDENCIES=0
 
-echo "Program and dependencies will install here: "$PWD"/ECadmium_"$VERSION" "
+PARENT_DIR="$(dirname "$PWD")"
+
+echo "Dependencies will install here: "$PARENT_DIR"/"
 
 echo "Do you wish to install Cadmium Dependencies as well? (Git and GCC 7 for Cadmium Desktop)"
 select yn in "Yes" "No"; do
@@ -19,10 +24,6 @@ select yn in "Yes" "No"; do
         No ) exit;;
     esac
 done
-
-echo "Creating Install Directory: "$PWD"/ECadmium_"$VERSION" "
-mkdir ECadmium_$VERSION
-cd ECadmium_$VERSION
 
 echo "### Install Dependencies ###"
 
@@ -69,17 +70,17 @@ wget https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2 
 
 echo "### Extract Boost ###"
 tar jxf boost_1_70_0.tar.bz2
+mv boost_1_70_0 ../
 
 echo "### Cleanup Boost Download ###"
 sudo rm boost_1_70_0.tar.bz2
+
+cd ../
 
 echo "### Clone Cadmium (Forked Version for Alpha ECadmium Release) ###"
 git clone https://github.com/KyleBjornson/cadmium.git
 
 echo "### Clone DESTimes ###"
 git clone https://github.com/Laouen/DESTimes.git
-
-echo "### Clone ECadmium Demo Project ###"
-git clone --recursive https://github.com/KyleBjornson/Blinky_ECadmium.git
 
 
