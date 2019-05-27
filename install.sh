@@ -1,11 +1,4 @@
 #-------------------------- INSTALL ECADMIUM DEPENDENCIES ----------------------------
-#
-# Ensure that the repo has been cloned recursively, or MBED will not be downloaded!
-# git clone --recursive https://github.com/KyleBjornson/Blinky_ECadmium.git
-#
-# If you forgot the --recursive tag, 'rmdir mbed-os' in Blinky_ECadmium folder 
-# then 'git clone https://github.com/ARMmbed/mbed-os.git' to manually add mbed-os
-#-------------------------------------------------------------------------------------
 
 GCC_FOLDER_NAME=gcc-arm-none-eabi-8-2018-q4-major
 CADMIUM_DEPENDENCIES=0
@@ -52,6 +45,9 @@ then
 	sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 60 --slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-7 --slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-7 --slave /usr/bin/g++-ranlib g++-ranlib usr/bin/g++-ranlib-7 g++ -v
 
 fi
+
+echo "--> Update Submodules"
+git submodule update --init
 
 
 echo "-->Python and PIP"
