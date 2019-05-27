@@ -1,19 +1,27 @@
+#-------------------------- INSTALL ECADMIUM DEPENDENCIES ----------------------------
+#
 # Ensure that the repo has been cloned recursively, or MBED will not be downloaded!
 # git clone --recursive https://github.com/KyleBjornson/Blinky_ECadmium.git
+#
+# If you forgot the --recursive tag, 'rmdir mbed-os' in Blinky_ECadmium folder 
+# then 'git clone https://github.com/ARMmbed/mbed-os.git' to manually add mbed-os
+#-------------------------------------------------------------------------------------
 
 GCC_FOLDER_NAME=gcc-arm-none-eabi-8-2018-q4-major
-VERSION=1_0_0
 CADMIUM_DEPENDENCIES=0
 
 PARENT_DIR="$(dirname "$PWD")"
+
+
+# -> Options
 
 echo "Dependencies will install here: "$PARENT_DIR"/"
 
 echo "Do you wish to install Cadmium Dependencies as well? (Git and GCC 7 for Cadmium Desktop)"
 select yn in "Yes" "No"; do
     case $yn in
-        Yes ) echo "Dependencies will be installed first."; CADMIUM_DEPENDENCIES=1; break;;
-        No ) echo "Dependencies will not be installed."; break;;
+        Yes ) echo "Cadmium Dependencies will be installed first."; CADMIUM_DEPENDENCIES=1; break;;
+        No ) echo "Cadmium Dependencies will not be installed."; break;;
     esac
 done
 
@@ -24,6 +32,8 @@ select yn in "Yes" "No"; do
         No ) exit;;
     esac
 done
+
+# -> Begin Install
 
 echo "### Install Dependencies ###"
 
@@ -58,6 +68,7 @@ sudo mv ./$GCC_FOLDER_NAME /opt/
 
 echo "### Cleaning Up GCC ARM Download ###"
 sudo rm $GCC_FOLDER_NAME.tar.bz2
+sudo rm -rf gcc-arm-none-eabi-8-2018-q4-major/
 
 echo "### Install MBED-CLI ###"
 sudo pip install mbed-cli
@@ -75,7 +86,7 @@ mv boost_1_70_0 ../
 echo "### Cleanup Boost Download ###"
 sudo rm boost_1_70_0.tar.bz2
 
-cd ../
+cd ../ #Move up a directory to clone git repositories
 
 echo "### Clone Cadmium (Forked Version for Alpha ECadmium Release) ###"
 git clone https://github.com/KyleBjornson/cadmium.git

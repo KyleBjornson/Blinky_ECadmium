@@ -1,6 +1,6 @@
 ### INSTALL ###
 
-Run './install.sh' in desired directory
+Run './install.sh' to install dependencies
 
 
 ### RUN ###
