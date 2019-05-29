@@ -13,9 +13,8 @@
 #include <cadmium/logger/tuple_to_ostream.hpp>
 #include <cadmium/logger/common_loggers.hpp>
 
-
-#include "../vendor/NDTime.hpp"
-#include "../vendor/iestream.hpp"
+#include <NDTime.hpp>
+#include <cadmium/io/iestream.hpp>
 
 #include "../data_structures/message.hpp"
 #include "../atomics/digitalInput.hpp"
@@ -29,7 +28,7 @@ using hclock=chrono::high_resolution_clock;
 using TIME = NDTime;
 
 #ifdef ECADMIUM
-// You must increase stack size for ECADMIUM. 
+// You must increase stack size for ECADMIUM.
 // The main functionality will be ran in a new thread with increased stack size
 // See below for reference:
 // https://os.mbed.com/questions/79584/Change-main-thread-stack-size/
@@ -40,13 +39,13 @@ void run_app();
 int main(int argc, char ** argv) {
   #ifdef ECADMIUM
   app_thread.start(&run_app);
-  // Let the main thread die on the embedded platform. 
+  // Let the main thread die on the embedded platform.
 }
 // run_app is only used for embedded threading, everything runs in main when simulated.
 void run_app(){
 #endif
 
-  // all simulation timing and I/O streams are ommited when running embedded 
+  // all simulation timing and I/O streams are ommited when running embedded
   #ifndef ECADMIUM
     auto start = hclock::now(); //to measure simulation execution time
 
@@ -56,10 +55,10 @@ void run_app(){
   #endif
 
   struct oss_sink_provider{
-      static std::ostream& sink(){   
+      static std::ostream& sink(){
           #ifdef ECADMIUM
             return cout;
-          #else       
+          #else
             return out_data;
           #endif
       }
@@ -123,13 +122,13 @@ cadmium::dynamic::modeling::ICs ics_TOP = {
    cadmium::dynamic::translate::make_IC<digitalInput_defs::out, blinky_defs::in>("digitalInput1", "blinky1")
 };
 CoupledModelPtr TOP = std::make_shared<cadmium::dynamic::modeling::coupled<TIME>>(
- "TOP", 
- submodels_TOP, 
- iports_TOP, 
- oports_TOP, 
- eics_TOP, 
- eocs_TOP, 
- ics_TOP 
+ "TOP",
+ submodels_TOP,
+ iports_TOP,
+ oports_TOP,
+ eics_TOP,
+ eocs_TOP,
+ ics_TOP
  );
 
 ///****************////
@@ -138,7 +137,7 @@ CoupledModelPtr TOP = std::make_shared<cadmium::dynamic::modeling::coupled<TIME>
     cout << "Model Created. Elapsed time: " << elapsed1 << "sec" << endl;
     #endif
 
-    cadmium::dynamic::engine::runner<NDTime, state> r(TOP, {0});
+    cadmium::dynamic::engine::runner<NDTime, logger_top> r(TOP, {0});
     #ifndef ECADMIUM
     elapsed1 = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1>>>(hclock::now() - start).count();
     cout << "Runner Created. Elapsed time: " << elapsed1 << "sec" << endl;
