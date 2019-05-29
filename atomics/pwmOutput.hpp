@@ -1,9 +1,9 @@
 /**
-* 
+* THIS CODE IS UNTESTED - THE BOARD USED AT ARSLABS DOES NOT HAVE A DAC
 */
 
-#ifndef BOOST_SIMULATION_PDEVS_DIGITALOUTPUT_HPP
-#define BOOST_SIMULATION_PDEVS_DIGITALOUTPUT_HPP
+#ifndef BOOST_SIMULATION_PDEVS_PWMOUTPUT_HPP
+#define BOOST_SIMULATION_PDEVS_PWMOUTPUT_HPP
 
 #include <cadmium/modeling/ports.hpp>
 #include <cadmium/modeling/message_bag.hpp>
@@ -30,38 +30,40 @@ using namespace cadmium;
 using namespace std;
 
 //Port definition
-    struct digitalOutput_defs{
+    struct pwmOutput_defs{
         struct in : public in_port<Message_t> {
         };
     };
 
     template<typename TIME>
-    class DigitalOutput {
-        using defs=digitalOutput_defs; // putting definitions in context
+    class PwmOutput {
+        using defs=pwmOutput_defs; // putting definitions in context
         public:
             //Parameters to be overwriten when instantiating the atomic model
             #ifdef ECADMIUM
-            DigitalOut* digiPin;
+            PwmOut* pwmPin;
             #endif
             
             // default c onstructor
-            DigitalOutput() noexcept{
-              state.output = false;
+            PwmOutput() noexcept{
+              state.output = 0;
               #ifdef ECADMIUM
-              digiPin = new DigitalOut(D0);
+              pwmPin = new mbed::PwmOut(PWM_OUT);
               #endif
             }
 
             #ifdef ECADMIUM
-            DigitalOutput(PinName pin) {
-              state.output = false;
-              digiPin = new DigitalOut(pin);
+            PwmOutput(PinName pin) {
+              state.output = 0;
+              pwmPin = new mbed::PwmOut(pin);
+              pwmPin->period_ms(10);
+              pwmPin->pulsewidth_ms(0);
             }
             #endif
             
             // state definition
             struct state_type{
-              bool output;
+              float output;
             }; 
             state_type state;
             // ports definition
@@ -79,7 +81,7 @@ using namespace std;
                 state.output = x.value;
               }
               #ifdef ECADMIUM
-              digiPin->write(state.output ? 1 : 0);
+              pwmPin->write(state.output);
               #endif
             }
             // confluence transition
@@ -91,27 +93,19 @@ using namespace std;
             // output function
             typename make_message_bags<output_ports>::type output() const {
               typename make_message_bags<output_ports>::type bags;
-              // Message_t out;              
-              // out.value = (state.output ? 1 : 0);
-              // get_messages<typename defs::dataOut>(bags).push_back(out);
-    
               return bags;
             }
 
             // time_advance function
             TIME time_advance() const {     
-              // #ifdef ECADMIUM
-              //   return TIME("10:00:00");
-              // #else
                 return std::numeric_limits<TIME>::infinity();
-              //#endif
             }
 
-            friend std::ostringstream& operator<<(std::ostringstream& os, const typename DigitalOutput<TIME>::state_type& i) {
+            friend std::ostringstream& operator<<(std::ostringstream& os, const typename PwmOutput<TIME>::state_type& i) {
               os << "Pin Out: " << (i.output ? 1 : 0); 
               return os;
             }
         };     
 
 
-#endif // BOOST_SIMULATION_PDEVS_DIGITALOUTPUT_HPP
+#endif // BOOST_SIMULATION_PDEVS_PWMOUTPUT_HPP
