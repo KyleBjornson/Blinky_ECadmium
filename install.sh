@@ -86,9 +86,6 @@ sudo rm boost_1_70_0.tar.bz2
 cd ../ #Move up a directory to clone git repositories
 
 echo "### Clone Cadmium (Forked Version for Alpha ECadmium Release) ###"
-git clone https://github.com/KyleBjornson/cadmium.git
-
-echo "### Clone DESTimes ###"
-git clone https://github.com/Laouen/DESTimes.git
+git clone --recursive https://github.com/KyleBjornson/cadmium.git
 
 
