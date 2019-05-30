@@ -1,6 +1,9 @@
 /**
-* or:
-* Cadmium implementation of CD++ or atomic model
+* Ben Earle and Kyle Bjornson
+* ARSLab - Carleton University
+*
+* Blinky:
+* Simple modle to toggle the LED using DEVS internal transitions.
 */
 
 #ifndef BOOST_SIMULATION_PDEVS_BLINKY_HPP
@@ -21,15 +24,13 @@
 #include <limits>
 #include <random>
 
-#include "../data_structures/message.hpp"
-
 using namespace cadmium;
 using namespace std;
 
 //Port definition
     struct blinky_defs {
-        struct dataOut : public out_port<Message_t> { };
-        struct in : public in_port<Message_t> { };
+        struct dataOut : public out_port<bool> { };
+        struct in : public in_port<bool> { };
     };
 
     template<typename TIME>
@@ -68,7 +69,7 @@ using namespace std;
               for(const auto &x : get_messages<typename defs::in>(mbs)){
                 // if(x.value == 0)
                 //   state.fastToggle = !state.fastToggle;
-                state.fastToggle = (x.value == 0);
+                state.fastToggle = (x == 0);
               }
             }
             // confluence transition
@@ -80,8 +81,8 @@ using namespace std;
             // output function
             typename make_message_bags<output_ports>::type output() const {
               typename make_message_bags<output_ports>::type bags;
-              Message_t out;              
-              out.value = (state.lightOn ? 1 : 0);
+              bool out;              
+              out = (state.lightOn ? 1 : 0);
               get_messages<typename defs::dataOut>(bags).push_back(out);
                 
               return bags;

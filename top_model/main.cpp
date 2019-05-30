@@ -1,3 +1,10 @@
+/**
+* By: Ben Earle and Kyle Bjornson
+* ARSLab - Carleton University
+*
+* Analog Input:
+* Model to interface with a analog Input pin for Embedded Cadmium.
+*/
 #include <iostream>
 #include <chrono>
 #include <algorithm>
@@ -16,9 +23,8 @@
 #include <NDTime.hpp>
 #include <cadmium/io/iestream.hpp>
 
-#include "../data_structures/message.hpp"
-#include "../atomics/digitalInput.hpp"
-#include "../atomics/digitalOutput.hpp"
+#include <cadmium/embedded/io/digitalInput.hpp>
+#include <cadmium/embedded/io/digitalOutput.hpp>
 
 #include "../atomics/blinky.hpp"
 
