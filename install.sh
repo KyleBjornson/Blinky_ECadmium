@@ -54,6 +54,9 @@ git submodule update --init
 echo "-->Python and PIP"
 sudo apt-get -y install python2.7 python-pip
 
+echo "### Install python-tk for SVEC ###"
+sudo apt-get install python-tk
+
 echo "### Download GCC ARM Compiler ###"
 wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-linux.tar.bz2?revision=d830f9dd-cd4f-406d-8672-cca9210dd220?product=GNU%20Arm%20Embedded%20Toolchain,64-bit,,Linux,8-2018-q4-major -O gcc-arm-none-eabi-8-2018-q4-major.tar.bz2
 
@@ -90,5 +93,3 @@ cd ../ #Move up a directory to clone git repositories
 
 echo "### Clone Cadmium (Forked Version for Alpha ECadmium Release) ###"
 git clone --recursive https://github.com/KyleBjornson/cadmium.git
-
-
