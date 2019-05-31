@@ -70,6 +70,7 @@ class Window(Frame):
         self.outputFolderPath = ""
         self.loaded = False
         self.displayTime = 0
+        self.pinLabels = []
 
         # parameters that you want to send through the Frame class. 
         Frame.__init__(self, master)   
@@ -181,10 +182,40 @@ class Window(Frame):
 
         # for pinLabel in self.pinLabels:
 
+        i = 0
+        for pin in self.inputPins:
+            currEvent = []
+            i = 1+i
+            label = Label(self, text=pin[0].split('_')[0])
+            label.grid(row = 3+i, column = 0)
+            self.pinLabels.append(label)
 
-        # for pin in self.inputPins:
-        #      = Label(self, text="Outputs")
-        #     outLabel.grid(row = 3, column = 2)
+            for event in pin[1]:
+                if (event[0] < self.displayTime):
+                    currEvent = event
+    
+            if (currEvent == []):
+                currEvent = [0,'?']
+            label = Label(self, text=currEvent[1])
+            label.grid(row = 3+i, column = 1)
+            self.pinLabels.append(label)
+
+        i=0
+        for pin in self.outputPins:
+            currEvent = []
+            i = 1+i
+            label = Label(self, text=pin[0].split('_')[0])
+            label.grid(row = 3+i, column = 2)
+            self.pinLabels.append(label)
+
+            for event in pin[1]:
+                if (event[0] < self.displayTime):
+                    currEvent = event
+            if (currEvent == []):
+                currEvent = [0,'?']
+            label = Label(self, text=currEvent[1])
+            label.grid(row = 3+i, column = 3)
+            self.pinLabels.append(label)
 
 
     def loadFiles(self):
