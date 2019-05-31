@@ -73,6 +73,9 @@ sudo pip install mbed-cli
 echo "### Set MBED Compiler Path ###"
 mbed config -G GCC_ARM_PATH /opt/$GCC_FOLDER_NAME/bin
 
+echo "### Install miniterm.py ###"
+sudo pip install pyserial
+
 echo "### Download Boost 1.70.0 ###"
 wget https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2 -O boost_1_70_0.tar.bz2
 
