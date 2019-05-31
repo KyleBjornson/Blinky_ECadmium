@@ -22,6 +22,7 @@
 
 #include <NDTime.hpp>
 #include <cadmium/io/iestream.hpp>
+#include <cadmium/embedded/serial_queue.hpp>
 
 #include <cadmium/embedded/io/digitalInput.hpp>
 #include <cadmium/embedded/io/digitalOutput.hpp>
@@ -60,20 +61,22 @@ int main(int argc, char ** argv) {
     // run_app is only used for embedded threading, everything runs in main when simulated.
     void run_app(){
 
+      static cadmium::embedded::serial_queue print_queue;
+
       //Logging is done over cout in ECADMIUM
       struct oss_sink_provider{
-        static std::ostream& sink(){   
-          return cout;
+        static std::ostream& sink(){
+          return print_queue;
         }
       };
-  #else 
-    // all simulation timing and I/O streams are ommited when running embedded 
+  #else
+    // all simulation timing and I/O streams are ommited when running embedded
 
     auto start = hclock::now(); //to measure simulation execution time
 
     static std::ofstream out_data("blinky_test_output.txt");
     struct oss_sink_provider{
-      static std::ostream& sink(){   
+      static std::ostream& sink(){
         return out_data;
       }
     };
