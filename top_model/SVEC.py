@@ -70,7 +70,8 @@ class Window(Frame):
         self.outputFolderPath = ""
         self.loaded = False
         self.displayTime = 0
-        self.pinLabels = []
+        self.stepList = []
+        self.labelList = []
 
         # parameters that you want to send through the Frame class. 
         Frame.__init__(self, master)   
@@ -140,6 +141,12 @@ class Window(Frame):
         fwdButton = Button(self, text=">>>",command=self.fwdTime)
         fwdButton.grid(row = 2, column = 3)
 
+        revStepButton = Button(self, text=" |< ",command=self.revStepTime)
+        revStepButton.grid(row =1, column = 2)
+
+        fwdStepButton = Button(self, text=" >| ",command=self.fwdStepTime)
+        fwdStepButton.grid(row = 1, column = 3)
+
         resetButton = Button(self, text="Reset Time",command=self.resetTime)
         resetButton.grid(row = 0, column = 1)
 
@@ -180,15 +187,16 @@ class Window(Frame):
         self.displayTimeEntry.delete(0, END)
         self.displayTimeEntry.insert(1, microSecondsToStrTime(self.displayTime))
 
-        # for pinLabel in self.pinLabels:
+        for label in self.labelList:
+            label.destroy()
+        self.labelList = []
 
         i = 0
         for pin in self.inputPins:
             currEvent = []
             i = 1+i
-            label = Label(self, text=pin[0].split('_')[0])
+            label = Label(self, text=pin[0].split('.')[0].strip("_In"))
             label.grid(row = 3+i, column = 0)
-            self.pinLabels.append(label)
 
             for event in pin[1]:
                 if (event[0] < self.displayTime):
@@ -198,24 +206,35 @@ class Window(Frame):
                 currEvent = [0,'?']
             label = Label(self, text=currEvent[1])
             label.grid(row = 3+i, column = 1)
-            self.pinLabels.append(label)
+            self.labelList.append(label)
 
         i=0
         for pin in self.outputPins:
             currEvent = []
             i = 1+i
-            label = Label(self, text=pin[0].split('_')[0])
+            label = Label(self, text=pin[0].split('.')[0].strip("_Out"))
             label.grid(row = 3+i, column = 2)
-            self.pinLabels.append(label)
 
             for event in pin[1]:
                 if (event[0] < self.displayTime):
                     currEvent = event
             if (currEvent == []):
                 currEvent = [0,'?']
+
             label = Label(self, text=currEvent[1])
             label.grid(row = 3+i, column = 3)
-            self.pinLabels.append(label)
+            self.labelList.append(label)
+
+    def updateStepTimes(self):
+        self.stepList = []
+        for pin in self.inputPins:
+            for event in pin[1]:
+                self.stepList.append(event[0])
+        
+        for pin in self.outputPins:
+            for event in pin[1]:
+                self.stepList.append(event[0])
+        self.stepList.sort()
 
 
     def loadFiles(self):
@@ -226,6 +245,7 @@ class Window(Frame):
             self.loaded = True
             self.inputPins = loadFromDir(self.inputFolderPath)
             self.outputPins = loadFromDir(self.outputFolderPath)
+            self.updateStepTimes();
 
     def revTime(self):
         self.displayTime -= strTimeToMicroSeconds(self.stepSize.get())
@@ -236,6 +256,35 @@ class Window(Frame):
     def fwdTime(self):
         self.displayTime += strTimeToMicroSeconds(self.stepSize.get())
         self.updatePinDisplay()
+
+
+    def revStepTime(self):
+        #If the files have not been loaded throw an error.
+        if (not self.loaded):
+            tkMessageBox.showinfo("ERROR", "Please load the I/O folders and try again.")
+            return
+        newTime = 0
+        for time in self.stepList:
+            if(time < self.displayTime):
+                newTime = time
+
+        self.displayTime = newTime
+        self.updatePinDisplay()
+        
+    def fwdStepTime(self):
+        #If the files have not been loaded throw an error.
+        if (not self.loaded):
+            tkMessageBox.showinfo("ERROR", "Please load the I/O folders and try again.")
+            return
+        for time in self.stepList:
+            if(time > self.displayTime):
+                self.displayTime = time
+                self.updatePinDisplay()
+                return
+        self.displayTime = self.stepList[-1]
+        self.updatePinDisplay()
+
+
 
     def resetTime(self):
         self.displayTime = 0
@@ -282,7 +331,7 @@ class Window(Frame):
 # you can later have windows within windows.
 root = Tk()
 
-root.geometry("400x600")
+root.geometry("500x400")
 
 #creation of an instance
 app = Window(root)
