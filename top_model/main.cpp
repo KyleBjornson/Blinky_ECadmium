@@ -22,7 +22,7 @@
 
 #include <NDTime.hpp>
 #include <cadmium/io/iestream.hpp>
-#include <cadmium/embedded/serial_queue.hpp>
+
 
 #include <cadmium/embedded/io/digitalInput.hpp>
 #include <cadmium/embedded/io/digitalOutput.hpp>
@@ -31,6 +31,7 @@
 
 #ifdef ECADMIUM
   #include "../mbed.h"
+  #include <cadmium/embedded/serial_queue.hpp>
 #else
   // When simulating the model it will use these files as IO in place of the pins specified.
   const char* BUTTON1 = "./inputs/BUTTON1_In.txt";
