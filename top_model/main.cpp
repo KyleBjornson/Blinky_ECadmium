@@ -31,7 +31,6 @@
 
 #ifdef ECADMIUM
   #include "../mbed.h"
-  #include <cadmium/embedded/serial_queue.hpp>
 #else
   // When simulating the model it will use these files as IO in place of the pins specified.
   const char* BUTTON1 = "./inputs/BUTTON1_In.txt";
@@ -43,36 +42,18 @@ using namespace std;
 using hclock=chrono::high_resolution_clock;
 using TIME = NDTime;
 
-// You must increase stack size for ECADMIUM.
-// The main functionality will be ran in a new thread with increased stack size
-// See below for reference:
-// https://os.mbed.com/questions/79584/Change-main-thread-stack-size/
-#ifdef ECADMIUM
-  Thread app_thread(osPriorityNormal, 16*1024); // 16k stack
-  void run_app();
-#endif
 
 int main(int argc, char ** argv) {
 
   #ifdef ECADMIUM
-    //This will end the main thread and create a new one with more stack.
-    app_thread.start(&run_app);
-    // Let the main thread die on the embedded platform.
-    }
-    // run_app is only used for embedded threading, everything runs in main when simulated.
-    void run_app(){
-
-      static cadmium::embedded::serial_queue print_queue;
-
       //Logging is done over cout in ECADMIUM
       struct oss_sink_provider{
         static std::ostream& sink(){
-          return print_queue;
+          return cout;
         }
       };
   #else
     // all simulation timing and I/O streams are ommited when running embedded
-
     auto start = hclock::now(); //to measure simulation execution time
 
     static std::ofstream out_data("blinky_test_output.txt");
