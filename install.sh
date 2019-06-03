@@ -76,6 +76,9 @@ sudo pip install mbed-cli
 echo "### Set MBED Compiler Path ###"
 mbed config -G GCC_ARM_PATH /opt/$GCC_FOLDER_NAME/bin
 
+echo "### Install Mbed-CLI dependencies ###"
+sudo pip install -r mbed-os/requirements.txt
+
 echo "### Install miniterm.py ###"
 sudo pip install pyserial
 
