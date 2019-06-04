@@ -42,7 +42,7 @@ using namespace std;
             TIME   fastToggleTime;
             // default constructor
             Blinky() noexcept{
-              slowToggleTime  = TIME("00:00:00:750");
+              slowToggleTime  = TIME("00:01:00:000");
               fastToggleTime  = TIME("00:00:00:250");
               state.lightOn = false;
               state.fastToggle = false;
