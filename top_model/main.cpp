@@ -9,6 +9,7 @@
 #include <chrono>
 #include <algorithm>
 #include <string>
+#define MISSED_DEADLINE_TOLERANCE 1000000
 
 #include <cadmium/modeling/coupled_model.hpp>
 #include <cadmium/modeling/ports.hpp>
@@ -91,7 +92,7 @@ int main(int argc, char ** argv) {
   /********************************************/
   /********** interruptInput1 *******************/
   /********************************************/
-  AtomicModelPtr interruptInput1 = cadmium::dynamic::translate::make_dynamic_atomic_model<InterruptInput, TIME>("interruptInput1", BUTTON1);
+  AtomicModelPtr interruptInput1 = cadmium::dynamic::translate::make_dynamic_asynchronus_atomic_model<InterruptInput, TIME>("interruptInput1", BUTTON1);
 
   /********************************************/
   /********* DigitalOutput1 *******************/
@@ -122,7 +123,7 @@ int main(int argc, char ** argv) {
   );
 
   ///****************////
-  cadmium::dynamic::engine::runner<NDTime, logger_top> r(TOP, {0});
+  cadmium::dynamic::engine::runner<NDTime, log_all> r(TOP, {0});
   r.run_until(NDTime("00:10:00:000"));
   #ifndef ECADMIUM
     return 0;
