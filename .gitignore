@@ -1,0 +1,5 @@
+top_model/build_out.txt
+top_model/blinky_test_output.txt
+top_model/BLINKY_TOP
+*.o
+BUILD/*
