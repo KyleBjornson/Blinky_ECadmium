@@ -7,7 +7,7 @@ Run './install.sh' to install dependencies
 
 ### SIMULATE MODELS ###
 
-cd Blinky_ECadmiu/top_model/
+cd Blinky_ECadmium/top_model/
 
 make clean; make all
 
