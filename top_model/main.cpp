@@ -30,6 +30,9 @@
 
 #include "../atomics/blinky.hpp"
 
+
+#include <cadmium/embedded/embedded_error.hpp>
+
 #ifdef ECADMIUM
   #include "../mbed.h"
 #else
