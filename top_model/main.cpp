@@ -11,20 +11,9 @@
 #include <string>
 #define MISSED_DEADLINE_TOLERANCE 1000000
 
-#include <cadmium/modeling/coupled_model.hpp>
-#include <cadmium/modeling/ports.hpp>
-#include <cadmium/modeling/dynamic_model_translator.hpp>
-#include <cadmium/concept/coupled_model_assert.hpp>
-#include <cadmium/modeling/dynamic_coupled.hpp>
-#include <cadmium/modeling/dynamic_atomic.hpp>
-#include <cadmium/engine/pdevs_dynamic_runner.hpp>
-#include <cadmium/logger/tuple_to_ostream.hpp>
-#include <cadmium/logger/common_loggers.hpp>
-
+#include <cadmium.h>
 #include <NDTime.hpp>
 #include <cadmium/io/iestream.hpp>
-
-
 #include <cadmium/real_time/arm_mbed/io/interruptInput.hpp>
 #include <cadmium/real_time/arm_mbed/io/digitalOutput.hpp>
 
