@@ -24,12 +24,12 @@
 #include <cadmium/io/iestream.hpp>
 
 
-#include <cadmium/embedded/io/digitalInput.hpp>
-#include <cadmium/embedded/io/digitalOutput.hpp>
+#include <cadmium/real_time/arm_mbed/io/digitalInput.hpp>
+#include <cadmium/real_time/arm_mbed/io/digitalOutput.hpp>
 
 #include "../atomics/blinky.hpp"
 
-#ifdef ECADMIUM
+#ifdef RT_ARM_MBED
   #include "../mbed.h"
 #else
   // When simulating the model it will use these files as IO in place of the pins specified.
@@ -45,8 +45,8 @@ using TIME = NDTime;
 
 int main(int argc, char ** argv) {
 
-  #ifdef ECADMIUM
-      //Logging is done over cout in ECADMIUM
+  #ifdef RT_ARM_MBED
+      //Logging is done over cout in RT_ARM_MBED
       struct oss_sink_provider{
         static std::ostream& sink(){
           return cout;
@@ -124,7 +124,7 @@ int main(int argc, char ** argv) {
   ///****************////
   cadmium::dynamic::engine::runner<NDTime, logger_top> r(TOP, {0});
   r.run_until(NDTime("00:10:00:000"));
-  #ifndef ECADMIUM
+  #ifndef RT_ARM_MBED
     return 0;
   #endif
 }
