@@ -4,7 +4,7 @@ COMPILE_TARGET=NUCLEO_F401RE
 FLASH_TARGET=NODE_F401RE
 EXECUTABLE_NAME=BLINKY_TOP
 
-INCLUDECADMIUM=-I ../../cadmium/include
+INCLUDRT_ARM_MBED=-I ../../cadmium/include
 INCLUDEDESTIMES=-I ../../cadmium/DESTimes/include
 
 embedded:
@@ -18,10 +18,10 @@ all: main.o ../data_structures/message.o
 	$(CC) -g -o $(EXECUTABLE_NAME) main.o ../data_structures/message.o
 
 main.o: main.cpp
-	$(CC) -g -c $(CFLAGS) $(INCLUDECADMIUM) $(INCLUDEDESTIMES) main.cpp -o main.o
+	$(CC) -g -c $(CFLAGS) $(INCLUDRT_ARM_MBED) $(INCLUDEDESTIMES) main.cpp -o main.o
 
 ../data_structures/message.o:
-	$(CC) -g -c $(CFLAGS) $(INCLUDECADMIUM) $(INCLUDEDESTIMES) ../data_structures/message.cpp -o ../data_structures/message.o
+	$(CC) -g -c $(CFLAGS) $(INCLUDRT_ARM_MBED) $(INCLUDEDESTIMES) ../data_structures/message.cpp -o ../data_structures/message.o
 
 clean:
 	rm -f $(EXECUTABLE_NAME) *.o *~
