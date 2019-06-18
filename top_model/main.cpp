@@ -25,8 +25,8 @@
 #include <cadmium/io/iestream.hpp>
 
 
-#include <cadmium/embedded/io/interruptInput.hpp>
-#include <cadmium/embedded/io/digitalOutput.hpp>
+#include <cadmium/real_time/arm_mbed/io/interruptInput.hpp>
+#include <cadmium/real_time/arm_mbed/io/digitalOutput.hpp>
 
 #include "../atomics/blinky.hpp"
 
