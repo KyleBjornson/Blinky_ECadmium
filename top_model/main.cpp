@@ -38,7 +38,7 @@ using TIME = NDTime;
 
 int main(int argc, char ** argv) {
 
-  #ifdef RT_ARM_MBED
+  #if defined(RT_ARM_MBED) || defined(RT_LINUX)
       //Logging is done over cout in RT_ARM_MBED
       struct oss_sink_provider{
         static std::ostream& sink(){
