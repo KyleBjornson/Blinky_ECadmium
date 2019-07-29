@@ -19,8 +19,6 @@
 
 #include "../atomics/blinky.hpp"
 
-
-
 #ifdef RT_ARM_MBED
   #include <cadmium/real_time/arm_mbed/embedded_error.hpp>
   #include "../mbed.h"
